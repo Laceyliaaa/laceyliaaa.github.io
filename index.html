@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>趣味测评测试</title>
+    <style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;
+}
+body{
+    background:#f5f7fa;
+    padding:24px 16px;
+    max-width:600px;
+    margin:0 auto;
+}
+.page{
+    display:none;
+}
+.page.active{
+    display:block;
+}
+.card{
+    background:#ffffff;
+    border-radius:16px;
+    padding:28px 24px;
+    box-shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+h1{
+    font-size:24px;
+    margin-bottom:12px;
+    color:#1a1a1a;
+}
+.desc{
+    color:#555;
+    margin-bottom:24px;
+    line-height:1.6;
+}
+.btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#2563eb;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+.btn:hover{
+    background:#1d4ed8;
+}
+.question-title{
+    font-size:18px;
+    margin-bottom:20px;
+    color:#222;
+}
+.option-item{
+    padding:14px 16px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:12px;
+    cursor:pointer;
+}
+.option-item:hover{
+    border-color:#2563eb;
+    background:#f0f6ff;
+}
+.progress-wrap{
+    margin-bottom:20px;
+}
+.progress-text{
+    font-size:14px;
+    color:#666;
+    margin-bottom:6px;
+}
+.progress-bar{
+    height:6px;
+    background:#e5e7eb;
+    border-radius:99px;
+}
+.progress-fill{
+    height:100%;
+    background:#2563eb;
+    border-radius:99px;
+    width:0%;
+}
+.result-name{
+    font-size:26px;
+    font-weight:bold;
+    margin-bottom:12px;
+    color:#111;
+}
+.result-desc{
+    line-height:1.7;
+    color:#444;
+    margin-bottom:24px;
+}
+</style>
+</head>
+<body>
+<!-- 首页 -->
+<div id="page-home" class="page active">
+    <div class="card">
+        <h1>趣味小测试</h1>
+        <p class="desc">完成下面几道题目，看看你的测评结果。</p>
+        <button class="btn" onclick="startQuiz()">开始测试</button>
+    </div>
+</div>
+
+<!-- 答题页 -->
+<div id="page-question" class="page">
+    <div class="card">
+        <div class="progress-wrap">
+            <div class="progress-text">第 <span id="current-num">1</span> / <span id="total-num">6</span> 题</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-bar"></div>
+            </div>
+        </div>
+        <div class="question-title" id="q-title"></div>
+        <div id="option-box"></div>
+    </div>
+</div>
+
+<!-- 结果页 -->
+<div id="page-result" class="page">
+    <div class="card">
+        <div class="result-name" id="res-name"></div>
+        <div class="result-desc" id="res-desc"></div>
+        <button class="btn" onclick="restartQuiz()">重新测试</button>
+    </div>
+</div>
+
+<script>
+// ========== 只在这里修改你的题目和结果，其他代码不动 ==========
+const questions = [
+    {
+        title:"遇到压力你更倾向？",
+        options:[
+            {text:"自己冷静消化",score:{brave:2,steady:1}},
+            {text:"找人倾诉沟通",score:{brave:1,steady:2}}
+        ]
+    },
+    {
+        title:"做决定时你习惯？",
+        options:[
+            {text:"快速拍板，先行动再说",score:{brave:2,steady:1}},
+            {text:"反复权衡，想好再行动",score:{brave:1,steady:2}}
+        ]
+    },
+    {
+        title:"空闲时间更喜欢？",
+        options:[
+            {text:"多出去社交活动",score:{brave:2,steady:1}},
+            {text:"安静独处休息",score:{brave:1,steady:2}}
+        ]
+    }
+];
+
+const resultList = [
+    {
+        name:"果敢进取型",
+        condition:(s)=> s.brave >= s.steady,
+        desc:"你做事干脆，愿意主动迎接变化，敢于尝试新事物，行动力很强。"
+    },
+    {
+        name:"稳重平和型",
+        condition:(s)=> s.steady > s.brave,
+        desc:"你性格沉稳谨慎，重视稳妥，善于思考，待人温和，不喜欢冒进。"
+    }
+];
+// =====================================================
+
+let currentIndex = 0;
+let score = {brave:0,steady:0};
+
+function showPage(id){
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+function startQuiz(){
+    currentIndex = 0;
+    score = {brave:0,steady:0};
+    renderQuestion();
+    showPage("page-question");
+}
+
+function renderQuestion(){
+    const q = questions[currentIndex];
+    document.getElementById("current-num").innerText = currentIndex+1;
+    document.getElementById("total-num").innerText = questions.length;
+    document.getElementById("q-title").innerText = q.title;
+    document.getElementById("progress-bar").style.width = ((currentIndex)/questions.length *100)+"%";
+
+    const box = document.getElementById("option-box");
+    box.innerHTML = "";
+    q.options.forEach(opt=>{
+        const div = document.createElement("div");
+        div.className = "option-item";
+        div.innerText = opt.text;
+        div.onclick = ()=>{
+            //累加分数
+            if(opt.score.brave) score.brave += opt.score.brave;
+            if(opt.score.steady) score.steady += opt.score.steady;
+            currentIndex++;
+            if(currentIndex >= questions.length){
+                showResult();
+            }else{
+                renderQuestion();
+            }
+        };
+        box.appendChild(div);
+    })
+}
+
+function showResult(){
+    for(let r of resultList){
+        if(r.condition(score)){
+            document.getElementById("res-name").innerText = r.name;
+            document.getElementById("res-desc").innerText = r.desc;
+            break;
+        }
+    }
+    showPage("page-result");
+}
+
+function restartQuiz(){
+    showPage("page-home");
+}
+</script>
+</body>
+</html>
