@@ -20,6 +20,72 @@ min-height:100vh;
 max-width:860px;
 margin:0 auto;
 }
+/* ========== 卡密弹窗样式 ========== */
+.auth-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+.auth-box {
+    background:#fffbf5;
+    border-radius:20px;
+    padding:32px 28px;
+    width: calc(100% - 32px);
+    max-width:420px;
+    box-shadow:0 4px 24px rgba(139,115,85,0.15);
+}
+.auth-box h3 {
+    color:#332b20;
+    font-size:22px;
+    margin-bottom:10px;
+    text-align:center;
+}
+.auth-tip {
+    color:#8c7860;
+    font-size:14px;
+    text-align:center;
+    margin-bottom:24px;
+}
+#pwdInput {
+    width:100%;
+    border:1px solid #e2d9cc;
+    border-radius:14px;
+    padding:14px 18px;
+    font-size:17px;
+    outline:none;
+    background:#fff;
+}
+#pwdInput:focus {
+    border-color:#b8996e;
+}
+.auth-err {
+    color:#c85c5c;
+    font-size:13px;
+    margin-top:10px;
+    min-height:18px;
+}
+.auth-btn-wrap {
+    margin-top:22px;
+}
+#verifyBtn {
+    width:100%;
+    border:none;
+    background:#b8996e;
+    color:#fff;
+    border-radius:14px;
+    padding:14px;
+    font-size:17px;
+    cursor:pointer;
+}
+#verifyBtn:disabled {
+    opacity:0.6;
+    cursor:not-allowed;
+}
+/* ====================================== */
 /* 顶部进度模块 */
 .progress-wrap{
 background:#fffbf5;
@@ -184,114 +250,135 @@ ul{
 padding-left:22px;
 }
 
+
 /* ===================== 手机移动端适配 ===================== */
 @media (max-width: 768px) {
-    body {
-        padding:16px 12px;
+body {
+padding:16px 12px;
     }
-    .question-card, .result-card {
-        padding:24px 20px;
-        border-radius:18px;
+.question-card, .result-card {
+padding:24px 20px;
+border-radius:18px;
     }
-    .q-title {
-        font-size:21px;
-        margin-bottom:8px;
+.q-title {
+font-size:21px;
+margin-bottom:8px;
     }
-    .q-hint{
-        font-size:11px;
-        margin-bottom:20px;
+.q-hint{
+font-size:11px;
+margin-bottom:20px;
     }
-    .opt-item {
-        padding:12px 14px;
-        border-radius:16px;
-        gap:12px;
+.opt-item {
+padding:12px 14px;
+border-radius:16px;
+gap:12px;
     }
-    .opt-letter {
-        width:36px;
-        height:36px;
-        font-size:15px;
+.opt-letter {
+width:36px;
+height:36px;
+font-size:15px;
     }
-    .opt-text {
-        font-size:16px;
+.opt-text {
+font-size:16px;
     }
-    .progress-wrap {
-        padding:16px 18px;
+.progress-wrap {
+padding:16px 18px;
     }
-    .bottom-bar {
-        flex-wrap: wrap;
-        gap:14px;
-        justify-content: center;
-        margin-top:28px;
+.bottom-bar {
+flex-wrap: wrap;
+gap:14px;
+justify-content: center;
+margin-top:28px;
     }
-    .btn-prev,.btn-next,.btn-submit{
-        padding:14px 26px;
-        font-size:16px;
+.btn-prev,.btn-next,.btn-submit{
+padding:14px 26px;
+font-size:16px;
     }
+.auth-box {
+    padding:24px 20px;
+}
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-    <!--答题页-->
-    <div id="quizPage" class="page active">
-        <!--进度条-->
-        <div class="progress-wrap">
-            <div class="progress-header">
-                <span>档案进度</span>
-                <span id="progressNum">1 / 24</span>
-            </div>
-            <div class="progress-bar-bg">
-                <div id="progressFill" class="progress-bar-fill"></div>
-            </div>
-        </div>
-        <!--题目卡片-->
-        <div class="question-card">
-            <div class="q-title" id="qTitle"></div>
-            <div class="q-hint">每题只需选一个最贴近你的反应。</div>
-            <div class="option-list" id="optionBox"></div>
-            <div class="bottom-bar">
-                <button class="btn-prev" id="prevBtn">上一题</button>
-                <button class="btn-next" id="nextBtn">下一题</button>
-                <button class="btn-submit" id="submitBtn">提交测评</button>
-            </div>
-        </div>
-    </div>
-    <!--结果页-->
-    <div id="resultPage" class="page">
-        <div class="result-card">
-            <h2>你的匹配人物：<span id="resName"></span></h2>
-            <div class="result-block">
-                <h3>人物解读</h3>
-                <p id="resPortrait"></p>
-            </div>
-            <div class="result-block">
-                <h3>核心优势</h3>
-                <ul id="resAbility"></ul>
-            </div>
-            <div class="result-block">
-                <h3>现实表现</h3>
-                <p id="resRealShow"></p>
-            </div>
-            <div class="result-block">
-                <h3>潜在风险</h3>
-                <p id="resRisk"></p>
-            </div>
-            <div class="result-block">
-                <h3>改善建议</h3>
-                <p id="resSuggest"></p>
-            </div>
-            <div class="result-block">
-                <h3>相似人物</h3>
-                <p id="resSimilar"></p>
-            </div>
-            <button class="btn-reset" id="resetBtn">重新答题</button>
+<!-- 卡密登录弹窗 DOM 保留在html中（页面结构放html，业务逻辑抽auth.js） -->
+<div class="auth-mask" id="authMask">
+    <div class="auth-box">
+        <h3>请输入测评卡密</h3>
+        <div class="auth-tip">卡密验证通过后，方可进入测评</div>
+        <input type="text" id="pwdInput" placeholder="请输入卡密">
+        <div class="auth-err" id="authErr"></div>
+        <div class="auth-btn-wrap">
+            <button id="verifyBtn">验证并进入</button>
         </div>
     </div>
 </div>
+
+<div class="wrap">
+<!--答题页-->
+<div id="quizPage" class="page active">
+<!--进度条-->
+<div class="progress-wrap">
+<div class="progress-header">
+<span>档案进度</span>
+<span id="progressNum">1 / 24</span>
+</div>
+<div class="progress-bar-bg">
+<div id="progressFill" class="progress-bar-fill"></div>
+</div>
+</div>
+<!--题目卡片-->
+<div class="question-card">
+<div class="q-title" id="qTitle"></div>
+<div class="q-hint">每题只需选一个最贴近你的反应。</div>
+<div class="option-list" id="optionBox"></div>
+<div class="bottom-bar">
+<button class="btn-prev" id="prevBtn">上一题</button>
+<button class="btn-next" id="nextBtn">下一题</button>
+<button class="btn-submit" id="submitBtn">提交测评</button>
+</div>
+</div>
+</div>
+<!--结果页-->
+<div id="resultPage" class="page">
+<div class="result-card">
+<h2>你的匹配人物：<span id="resName"></span></h2>
+<div class="result-block">
+<h3>人物解读</h3>
+<p id="resPortrait"></p>
+</div>
+<div class="result-block">
+<h3>核心优势</h3>
+<ul id="resAbility"></ul>
+</div>
+<div class="result-block">
+<h3>现实表现</h3>
+<p id="resRealShow"></p>
+</div>
+<div class="result-block">
+<h3>潜在风险</h3>
+<p id="resRisk"></p>
+</div>
+<div class="result-block">
+<h3>改善建议</h3>
+<p id="resSuggest"></p>
+</div>
+<div class="result-block">
+<h3>相似人物</h3>
+<p id="resSimilar"></p>
+</div>
+<button class="btn-reset" id="resetBtn">重新答题</button>
+</div>
+</div>
+</div>
 <script type="module">
+// 引入【独立拆分的卡密模块】
+import { initAuth } from './auth.js'
 import { questionList } from './questionList.js'
 import { characterList } from './characterList.js'
 import { calcCosSimilarity, getUserVector, matchPerson } from './utils.js'
+
+
 const quizPage = document.getElementById("quizPage");
 const resultPage = document.getElementById("resultPage");
 const qTitle = document.getElementById("qTitle");
@@ -305,22 +392,23 @@ const progressFill = document.getElementById("progressFill");
 let currentIdx = 0;
 let userAnswers = new Array(questionList.length).fill(null);
 const letterArr = ["A","B","C","D"];
+
 // 更新进度条
 function updateProgress(){
-    const total = questionList.length;
-    const curr = currentIdx + 1;
+const total = questionList.length;
+const curr = currentIdx + 1;
     progressNum.innerText = `${curr} / ${total}`;
-    const pct = (curr / total) * 100;
+const pct = (curr / total) * 100;
     progressFill.style.width = pct + "%";
 }
 //渲染当前题目
 function renderQuestion(){
-    const q = questionList[currentIdx];
+const q = questionList[currentIdx];
     updateProgress();
     qTitle.innerText = q.title;
-    let html = "";
+let html = "";
     q.options.forEach((opt,oIdx)=>{
-        const isChecked = userAnswers[currentIdx] === oIdx;
+const isChecked = userAnswers[currentIdx] === oIdx;
         html += `
         <div class="opt-item ${isChecked?'active':''}" data-idx="${oIdx}">
             <div class="opt-letter">${letterArr[oIdx]}</div>
@@ -329,16 +417,16 @@ function renderQuestion(){
         `
     })
     optionBox.innerHTML = html;
-    //点击选项直接写入答案数组
+//点击选项直接写入答案数组
     document.querySelectorAll('.opt-item').forEach(item=>{
         item.onclick = function(){
-            const idx = Number(this.dataset.idx);
+const idx = Number(this.dataset.idx);
             userAnswers[currentIdx] = idx;
             renderQuestion();
         }
     })
     prevBtn.disabled = currentIdx <= 0;
-    if(currentIdx >= questionList.length - 1){
+if(currentIdx >= questionList.length - 1){
         nextBtn.style.display = "none";
         submitBtn.style.display = "block";
     }else{
@@ -348,16 +436,16 @@ function renderQuestion(){
 }
 //上一题
 prevBtn.addEventListener('click',()=>{
-    if(currentIdx>0){
+if(currentIdx>0){
         currentIdx -=1;
         renderQuestion();
     }
 })
 //下一题
 nextBtn.addEventListener('click',()=>{
-    if(userAnswers[currentIdx] === null){
+if(userAnswers[currentIdx] === null){
         alert("请选择一个选项再继续");
-        return;
+return;
     }
     currentIdx += 1;
     renderQuestion();
@@ -365,16 +453,16 @@ nextBtn.addEventListener('click',()=>{
 //提交测评
 submitBtn.addEventListener('click',()=>{
     console.log("全部答题数组：", userAnswers);
-    for(let i=0;i<userAnswers.length;i++){
-        if(userAnswers[i] === null){
+for(let i=0;i<userAnswers.length;i++){
+if(userAnswers[i] === null){
             alert(`第${i+1}题尚未作答，请完成！`);
             currentIdx = i;
             renderQuestion();
-            return;
+return;
         }
     }
-    const userVec = getUserVector(userAnswers, questionList);
-    const matchResult = matchPerson(userVec, characterList);
+const userVec = getUserVector(userAnswers, questionList);
+const matchResult = matchPerson(userVec, characterList);
     document.getElementById("resName").innerText = matchResult.name
     document.getElementById("resPortrait").innerText = matchResult.portrait
     document.getElementById("resAbility").innerHTML = matchResult.ability.map(item=>`<li>${item}</li>`).join("")
@@ -393,8 +481,9 @@ resetBtn.addEventListener('click', ()=>{
     resultPage.classList.remove("active");
     renderQuestion();
 })
-//初始化
-renderQuestion();
+
+// 初始化卡密模块，验证成功后渲染题目
+initAuth(renderQuestion);
 </script>
 </body>
 </html>
