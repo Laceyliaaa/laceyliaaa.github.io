@@ -3,243 +3,398 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>趣味测评</title>
+<title>历史人物性格测评</title>
 <style>
 * {
+box-sizing: border-box;
 margin: 0;
 padding: 0;
-box-sizing: border-box;
-font-family: system-ui, sans-serif;
-        }
+font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
 body {
-background: #f7f8fa;
-padding: 20px;
-        }
-.container {
-max-width: 600px;
-margin: 0 auto;
-background: #fff;
-border-radius: 16px;
-padding: 24px;
-box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-.title {
-text-align: center;
-font-size: 22px;
-margin-bottom: 20px;
-color: #333;
-        }
-.question-box {
-margin-bottom: 24px;
-        }
-.question {
-font-size: 18px;
-margin-bottom:12px;
-        }
-.option-item {
-padding:12px 16px;
-border:1px solid #e5e7eb;
-border-radius:10px;
+padding:24px 16px;
+background-color: #f8f3e9;
+min-height:100vh;
+}
+.wrap {
+max-width:860px;
+margin:0 auto;
+}
+/* 顶部进度模块 */
+.progress-wrap{
+background:#fffbf5;
+border-radius:16px;
+padding:20px 24px;
+box-shadow: 0 2px 10px rgba(139,115,85,0.08);
+margin-bottom:20px;
+}
+.progress-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
 margin-bottom:10px;
-cursor: pointer;
-transition: all 0.2s;
-        }
-.option-item:hover {
-border-color: #6366f1;
-background: #f5f6ff;
-        }
-.option-item.active {
-background: #6366f1;
-color:#fff;
-border-color:#6366f1;
-        }
-.btn-next {
+color:#77644e;
+font-size:14px;
+}
+.progress-bar-bg{
 width:100%;
-padding:14px;
-border:none;
-background:#6366f1;
-color:white;
-border-radius:12px;
-font-size:16px;
-cursor: pointer;
-        }
-.result-wrap {
-display:none;
-        }
-/* 卡密弹窗 */
-.password-modal {
-position: fixed;
-inset:0;
-background:rgba(0,0,0,0.7);
+height:10px;
+background:#e8e2d8;
+border-radius:99px;
+overflow:hidden;
+}
+.progress-bar-fill{
+height:100%;
+background:#b8996e;
+border-radius:99px;
+transition:0.35s ease;
+width:0%;
+}
+/* 题目卡片 */
+.question-card{
+background:#fffbf5;
+border-radius:24px;
+padding:40px 36px;
+box-shadow: 0 4px 18px rgba(139,115,85,0.07);
+}
+.q-title{
+font-size:27px;
+line-height:1.6;
+color:#332b20;
+margin-bottom:12px;
+font-weight:500;
+}
+.q-hint{
+font-size:12px;
+color:#8c7860;
+margin-bottom:32px;
+text-align:left;
+}
+/* A/B/C/D选项 */
+.option-list{
+display:flex;
+flex-direction:column;
+gap:16px;
+}
+.opt-item{
+display:flex;
+align-items:center;
+gap:16px;
+border:1px solid #e2d9cc;
+border-radius:20px;
+padding:14px 22px;
+cursor:pointer;
+background:#ffffff;
+transition:0.24s;
+}
+.opt-item:hover{
+background:#fff8ec;
+border-color:#d4c3ad;
+}
+.opt-item.active{
+background:#fff2df;
+border-color:#c9b394;
+}
+.opt-letter{
+width:40px;
+height:40px;
+border-radius:50%;
+background:#f3e9da;
 display:flex;
 align-items:center;
 justify-content:center;
-z-index:9999;
-        }
-.modal-box {
-background:white;
-padding:30px;
-border-radius:16px;
-width:90%;
-max-width:400px;
-        }
-.modal-box h3 {
-margin-bottom:16px;
-text-align:center;
-        }
-#pwdInput {
-width:100%;
-padding:12px 14px;
-border:1px solid #ddd;
-border-radius:8px;
-font-size:16px;
-margin-bottom:14px;
-        }
-.submit-pwd {
-width:100%;
-padding:12px;
-background:#6366f1;
-color:white;
+color:#705c44;
+font-weight:500;
+flex-shrink:0;
+}
+.opt-text{
+font-size:17px;
+color:#443b2f;
+line-height:1.6;
+}
+/* 底部导航 */
+.bottom-bar{
+display:flex;
+justify-content:center;
+gap:20px;
+align-items:center;
+margin-top:40px;
+}
+.btn-prev{
+border:1px solid #c9b9a3;
+background:#fffbf5;
+color:#6b5a46;
+border-radius:12px;
+padding:16px 32px;
+font-size:17px;
+cursor:pointer;
+}
+.btn-prev:disabled{
+opacity:0.32;
+cursor:not-allowed;
+}
+.btn-next{
 border:none;
-border-radius:8px;
+background:#b8996e;
+color:#fff;
+border-radius:12px;
+padding:16px 38px;
+font-size:17px;
+cursor:pointer;
+}
+.btn-submit{
+border:none;
+background:#997c54;
+color:#fff;
+border-radius:12px;
+padding:16px 38px;
+font-size:17px;
+cursor:pointer;
+display:none;
+}
+.btn-reset{
+border:none;
+background:#c2a885;
+color:#fff;
+border-radius:12px;
+padding:12px 24px;
 font-size:16px;
 cursor:pointer;
-        }
-.tip-text {
-color:red;
-font-size:14px;
-text-align:center;
-margin-top:8px;
-display:none;
-        }
+margin-top:24px;
+}
+/* 结果页 */
+.page{display:none;}
+.page.active{display:block;}
+.result-card{
+background:#fffbf5;
+border-radius:24px;
+padding:40px 36px;
+box-shadow: 0 4px 18px rgba(139,115,85,0.07);
+}
+.result-block {
+margin-top:20px;
+line-height:1.75;
+color:#443b2f;
+}
+.result-block h3 {
+margin:16px 0 8px;
+color:#6b5a46;
+}
+ul{
+padding-left:22px;
+}
+
+/* ===================== 手机移动端适配 ===================== */
+@media (max-width: 768px) {
+    body {
+        padding:16px 12px;
+    }
+    .question-card, .result-card {
+        padding:24px 20px;
+        border-radius:18px;
+    }
+    .q-title {
+        font-size:21px;
+        margin-bottom:8px;
+    }
+    .q-hint{
+        font-size:11px;
+        margin-bottom:20px;
+    }
+    .opt-item {
+        padding:12px 14px;
+        border-radius:16px;
+        gap:12px;
+    }
+    .opt-letter {
+        width:36px;
+        height:36px;
+        font-size:15px;
+    }
+    .opt-text {
+        font-size:16px;
+    }
+    .progress-wrap {
+        padding:16px 18px;
+    }
+    .bottom-bar {
+        flex-wrap: wrap;
+        gap:14px;
+        justify-content: center;
+        margin-top:28px;
+    }
+    .btn-prev,.btn-next,.btn-submit{
+        padding:14px 26px;
+        font-size:16px;
+    }
+}
 </style>
 </head>
-<!-- 删掉了 oncontextmenu="return false;" 解除右键锁定 -->
 <body>
-<!-- 卡密弹窗 -->
-<div class="password-modal" id="pwdModal">
-<div class="modal-box">
-<h3>请输入访问卡密</h3>
-<input type="password" id="pwdInput" placeholder="请输入卡密">
-<button class="submit-pwd" onclick="checkPassword()">确认进入</button>
-<div class="tip-text" id="errorTip">卡密错误，请重新输入</div>
+<div class="wrap">
+    <!--答题页-->
+    <div id="quizPage" class="page active">
+        <!--进度条-->
+        <div class="progress-wrap">
+            <div class="progress-header">
+                <span>档案进度</span>
+                <span id="progressNum">1 / 24</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div id="progressFill" class="progress-bar-fill"></div>
+            </div>
+        </div>
+        <!--题目卡片-->
+        <div class="question-card">
+            <div class="q-title" id="qTitle"></div>
+            <div class="q-hint">每题只需选一个最贴近你的反应。</div>
+            <div class="option-list" id="optionBox"></div>
+            <div class="bottom-bar">
+                <button class="btn-prev" id="prevBtn">上一题</button>
+                <button class="btn-next" id="nextBtn">下一题</button>
+                <button class="btn-submit" id="submitBtn">提交测评</button>
+            </div>
+        </div>
+    </div>
+    <!--结果页-->
+    <div id="resultPage" class="page">
+        <div class="result-card">
+            <h2>你的匹配人物：<span id="resName"></span></h2>
+            <div class="result-block">
+                <h3>人物解读</h3>
+                <p id="resPortrait"></p>
+            </div>
+            <div class="result-block">
+                <h3>核心优势</h3>
+                <ul id="resAbility"></ul>
+            </div>
+            <div class="result-block">
+                <h3>现实表现</h3>
+                <p id="resRealShow"></p>
+            </div>
+            <div class="result-block">
+                <h3>潜在风险</h3>
+                <p id="resRisk"></p>
+            </div>
+            <div class="result-block">
+                <h3>改善建议</h3>
+                <p id="resSuggest"></p>
+            </div>
+            <div class="result-block">
+                <h3>相似人物</h3>
+                <p id="resSimilar"></p>
+            </div>
+            <button class="btn-reset" id="resetBtn">重新答题</button>
+        </div>
+    </div>
 </div>
-</div>
-
-
-<!-- 测评主体 -->
-<div class="container" id="quizWrap" style="display:none;">
-<div class="title">趣味测评问卷</div>
-<div class="question-box">
-<div class="question" id="questionText"></div>
-<div id="optionList"></div>
-</div>
-<button class="btn-next" id="nextBtn" onclick="nextQuestion()">下一题</button>
-
-
-<div class="result-wrap" id="resultBox">
-<div class="title">你的测试结果</div>
-<div id="resultContent"></div>
-<div style="margin-top:20px;font-size:12px;color:#888;">免责声明：本测评仅为趣味娱乐，不具备专业诊断效力，仅供参考</div>
-</div>
-</div>
-
-
-<script>
-// 对接你刚刚部署好的Cloudflare Workers接口
-const API_URL = "https://quiz-auth.1226164210.workers.dev/";
-
-
-// ===== 这里填写你的测评题目，后续在这里修改题库 =====
-const questionList = [
-    {
-        title:"第一题：休息时你更喜欢？",
-        options:[
-            {text:"A 宅家独处",score:1},
-            {text:"B 出门聚会",score:2}
-        ]
-    },
-    {
-        title:"第二题：做决定通常？",
-        options:[
-            {text:"A 谨慎思考很久",score:1},
-            {text:"B 凭直觉快速选择",score:2}
-        ]
-    }
-]
-
-
-// ===== 根据总分返回测评结果 =====
-function getResult(totalScore){
-if(totalScore <=2){
-return "【类型A】内敛深思型：做事稳重，擅长独立思考，享受安静的个人空间。"
-    }else{
-return "【类型B】外向活力型：乐于社交，行动力强，愿意尝试新鲜事物。"
-    }
+<script type="module">
+import { questionList } from './questionList.js'
+import { characterList } from './characterList.js'
+import { calcCosSimilarity, getUserVector, matchPerson } from './utils.js'
+const quizPage = document.getElementById("quizPage");
+const resultPage = document.getElementById("resultPage");
+const qTitle = document.getElementById("qTitle");
+const optionBox = document.getElementById("optionBox");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const submitBtn = document.getElementById("submitBtn");
+const resetBtn = document.getElementById("resetBtn");
+const progressNum = document.getElementById("progressNum");
+const progressFill = document.getElementById("progressFill");
+let currentIdx = 0;
+let userAnswers = new Array(questionList.length).fill(null);
+const letterArr = ["A","B","C","D"];
+// 更新进度条
+function updateProgress(){
+    const total = questionList.length;
+    const curr = currentIdx + 1;
+    progressNum.innerText = `${curr} / ${total}`;
+    const pct = (curr / total) * 100;
+    progressFill.style.width = pct + "%";
 }
-
-
-// 请求后端校验卡密
-async function checkPassword(){
-const inputVal = document.getElementById("pwdInput").value.trim();
-const tipDom = document.getElementById("errorTip");
-    tipDom.style.display = "none";
-
-
-const res = await fetch(API_URL,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({pwd:inputVal})
-    })
-const data = await res.json();
-if(data.ok){
-        document.getElementById("pwdModal").style.display = "none";
-        document.getElementById("quizWrap").style.display = "block";
-        initQuiz();
-    }else{
-        tipDom.innerText = data.msg;
-        tipDom.style.display = "block";
-    }
-}
-
-
-// 测评逻辑
-let currentIndex = 0;
-let totalScore = 0;
-
-
-function initQuiz(){
-    renderQuestion();
-}
+//渲染当前题目
 function renderQuestion(){
-const item = questionList[currentIndex];
-    document.getElementById("questionText").innerText = item.title;
-const optWrap = document.getElementById("optionList");
-    optWrap.innerHTML = "";
-    item.options.forEach((opt,idx)=>{
-const div = document.createElement("div");
-        div.className = "option-item";
-        div.innerText = opt.text;
-        div.onclick = ()=>{
-            document.querySelectorAll(".option-item").forEach(d=>d.classList.remove("active"))
-            div.classList.add("active");
-            totalScore += opt.score;
-        }
-        optWrap.appendChild(div);
+    const q = questionList[currentIdx];
+    updateProgress();
+    qTitle.innerText = q.title;
+    let html = "";
+    q.options.forEach((opt,oIdx)=>{
+        const isChecked = userAnswers[currentIdx] === oIdx;
+        html += `
+        <div class="opt-item ${isChecked?'active':''}" data-idx="${oIdx}">
+            <div class="opt-letter">${letterArr[oIdx]}</div>
+            <div class="opt-text">${opt.text}</div>
+        </div>
+        `
     })
-}
-function nextQuestion(){
-    currentIndex++;
-if(currentIndex >= questionList.length){
-// 全部题目完成，展示结果
-        document.querySelector(".question-box").style.display = "none";
-        document.getElementById("nextBtn").style.display = "none";
-        document.getElementById("resultBox").style.display = "block";
-        document.getElementById("resultContent").innerText = getResult(totalScore);
-return;
+    optionBox.innerHTML = html;
+    //点击选项直接写入答案数组
+    document.querySelectorAll('.opt-item').forEach(item=>{
+        item.onclick = function(){
+            const idx = Number(this.dataset.idx);
+            userAnswers[currentIdx] = idx;
+            renderQuestion();
+        }
+    })
+    prevBtn.disabled = currentIdx <= 0;
+    if(currentIdx >= questionList.length - 1){
+        nextBtn.style.display = "none";
+        submitBtn.style.display = "block";
+    }else{
+        nextBtn.style.display = "block";
+        submitBtn.style.display = "none";
     }
-    renderQuestion();
 }
+//上一题
+prevBtn.addEventListener('click',()=>{
+    if(currentIdx>0){
+        currentIdx -=1;
+        renderQuestion();
+    }
+})
+//下一题
+nextBtn.addEventListener('click',()=>{
+    if(userAnswers[currentIdx] === null){
+        alert("请选择一个选项再继续");
+        return;
+    }
+    currentIdx += 1;
+    renderQuestion();
+})
+//提交测评
+submitBtn.addEventListener('click',()=>{
+    console.log("全部答题数组：", userAnswers);
+    for(let i=0;i<userAnswers.length;i++){
+        if(userAnswers[i] === null){
+            alert(`第${i+1}题尚未作答，请完成！`);
+            currentIdx = i;
+            renderQuestion();
+            return;
+        }
+    }
+    const userVec = getUserVector(userAnswers, questionList);
+    const matchResult = matchPerson(userVec, characterList);
+    document.getElementById("resName").innerText = matchResult.name
+    document.getElementById("resPortrait").innerText = matchResult.portrait
+    document.getElementById("resAbility").innerHTML = matchResult.ability.map(item=>`<li>${item}</li>`).join("")
+    document.getElementById("resRealShow").innerText = matchResult.realShow
+    document.getElementById("resRisk").innerText = matchResult.risk
+    document.getElementById("resSuggest").innerText = matchResult.suggest
+    document.getElementById("resSimilar").innerText = matchResult.similarPool.join("、")
+    quizPage.classList.remove("active");
+    resultPage.classList.add("active");
+})
+// 重新答题
+resetBtn.addEventListener('click', ()=>{
+    currentIdx = 0;
+    userAnswers = new Array(questionList.length).fill(null);
+    quizPage.classList.add("active");
+    resultPage.classList.remove("active");
+    renderQuestion();
+})
+//初始化
+renderQuestion();
 </script>
 </body>
 </html>
